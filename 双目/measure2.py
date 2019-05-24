@@ -52,7 +52,7 @@ def extrace_object(image, a):
 #    cv.imshow('canny edge', edge_output)
     
     index = np.argwhere(edge_output == 255)
-    X_d, Y_d = index[:, 0], index[:, 1]
+    X_d, Y_d= index[:, 0], index[:, 1]
     
     return X_d, Y_d
 
@@ -169,41 +169,43 @@ if __name__ == '__main__':
 
     rgb_rectify_iamge_l = cv.cvtColor(undistort_image_left, cv.COLOR_GRAY2BGR)
     X_d_left, Y_d_left = extrace_object(rgb_rectify_iamge_l, 0)
-    left = np.array([[X_d_left[2], Y_d_left[2]],
-                     [X_d_left[434],Y_d_left[434]],
-                     [X_d_left[224],Y_d_left[224]],
-                     [X_d_left[223],Y_d_left[223]]])
-                
-#left = np.array([[X_d_left[np.round(np.mean(np.argwhere(X_d_left == min(X_d_left)))).astype(np.int)],
-#                          Y_d_left[np.round(np.mean(np.argwhere(X_d_left == min(X_d_left)))).astype(np.int)]],
-#                [X_d_left[np.round(np.mean(np.argwhere(X_d_left == max(X_d_left)))).astype(np.int)],
-#                          Y_d_left[np.round(np.mean(np.argwhere(X_d_left == max(X_d_left)))).astype(np.int)]],
-#                [X_d_left[np.round(np.mean(np.argwhere(Y_d_left == min(Y_d_left)))).astype(np.int)],
-#                          Y_d_left[np.round(np.mean(np.argwhere(Y_d_left == min(Y_d_left)))).astype(np.int)]],
-#                [X_d_left[np.round(np.mean(np.argwhere(Y_d_left == max(Y_d_left)))).astype(np.int)],
-#                          Y_d_left[np.round(np.mean(np.argwhere(Y_d_left == max(Y_d_left)))).astype(np.int)]]])
-
+    
     rgb_rectify_iamge_r = cv.cvtColor(undistort_image_right, cv.COLOR_GRAY2BGR)
     X_d_right, Y_d_right = extrace_object(rgb_rectify_iamge_r, 1)
-    right = np.array([[X_d_right[7], Y_d_right[7]],
-                      [X_d_right[431],Y_d_right[431]],
-                      [X_d_right[211],Y_d_right[211]],
-                      [X_d_right[238],Y_d_right[238]]])
+    #找上下左右四个点进行匹配
+    left_up = np.round(np.mean(np.argwhere(X_d_left == min(X_d_left)))).astype(np.int)
+    left_dowm = np.round(np.mean(np.argwhere(X_d_left == max(X_d_left)))).astype(np.int)
+    left_left = np.round(np.mean(np.argwhere(Y_d_left == min(Y_d_left)))).astype(np.int)
+    while left_left not in np.argwhere(Y_d_left == min(Y_d_left)):
+        left_left += 1  
+    left_right = np.round(np.mean(np.argwhere(Y_d_left == max(Y_d_left)))).astype(np.int)
+    while left_right not in np.argwhere(Y_d_left == max(Y_d_left)):
+        left_right += 1
+        
+    left = np.array([[X_d_left[left_up],Y_d_left[left_up]],
+                     [X_d_left[left_dowm],Y_d_left[left_dowm]],
+                     [X_d_left[left_left],Y_d_left[left_left]],
+                     [X_d_left[left_right],Y_d_left[left_right]]])
 
-#right = np.array([[X_d_right[np.round(np.mean(np.argwhere(X_d_right == min(X_d_right)))).astype(np.int)],
-#                             Y_d_right[np.round(np.mean(np.argwhere(X_d_right == min(X_d_right)))).astype(np.int)]],
-#                [X_d_right[np.round(np.mean(np.argwhere(X_d_right == max(X_d_right)))).astype(np.int)],
-#                           Y_d_right[np.round(np.mean(np.argwhere(X_d_right == max(X_d_right)))).astype(np.int)]],
-#                [X_d_right[np.round(np.mean(np.argwhere(Y_d_right == min(Y_d_right)))).astype(np.int)],
-#                           Y_d_right[np.round(np.mean(np.argwhere(Y_d_right == min(Y_d_right)))).astype(np.int)]],
-#                [X_d_right[np.round(np.mean(np.argwhere(Y_d_right == max(Y_d_right)))).astype(np.int)],
-#                           Y_d_right[np.round(np.mean(np.argwhere(Y_d_right == max(Y_d_right)))).astype(np.int)]]])
-#    
+    right_up = np.round(np.mean(np.argwhere(X_d_right == min(X_d_right)))).astype(np.int)
+    right_dowm = np.round(np.mean(np.argwhere(X_d_right == max(X_d_right)))).astype(np.int)
+    right_left = np.round(np.mean(np.argwhere(Y_d_right == min(Y_d_right)))).astype(np.int)
+    if right_left not in np.argwhere(Y_d_right == min(Y_d_right)):
+        right_left += 1
+    right_right = np.round(np.mean(np.argwhere(Y_d_right == max(Y_d_right)))).astype(np.int)
+    if right_right not in np.argwhere(Y_d_right == max(Y_d_right)):
+        right_right += 1
+        
+    right = np.array([[X_d_right[right_up],Y_d_right[right_up]],
+                      [X_d_right[right_dowm],Y_d_right[right_dowm]],
+                      [X_d_right[right_left],Y_d_right[right_left]],
+                      [X_d_right[right_right],Y_d_right[right_right]]])
+    #求视差
     d = left[:, 1] - right[:, 1]
     left = np.append(left, d.reshape(-1, 1), axis = 1)
     left = np.append(left, np.ones((4, 1)), axis = 1)
     left = left.T
-#    left[0], left[1] = left[1], left[0]
+
     p = np.dot(Q, left)
     
     p = p.T
