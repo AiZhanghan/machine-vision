@@ -50,6 +50,7 @@ def extrace_object(image, a):
     edge_output = cv.morphologyEx(edge_output, cv.MORPH_CLOSE, kernel)
     edge_output = cv.Canny(edge_output, 50, 150)
 #    cv.imshow('canny edge', edge_output)
+#    cv.imwrite('right_edge.png', edge_output)
     
     index = np.argwhere(edge_output == 255)
     X_d, Y_d= index[:, 0], index[:, 1]
@@ -166,6 +167,7 @@ if __name__ == '__main__':
         cv.line(canvas, (0, i), (len(canvas[0]), i), (0, 255, 0), 1, 8)
         
     cv.imshow('rectified', canvas)
+    cv.imwrite('rectified.png', canvas)
 
     rgb_rectify_iamge_l = cv.cvtColor(undistort_image_left, cv.COLOR_GRAY2BGR)
     X_d_left, Y_d_left = extrace_object(rgb_rectify_iamge_l, 0)
@@ -204,7 +206,9 @@ if __name__ == '__main__':
     d = left[:, 1] - right[:, 1]
     left = np.append(left, d.reshape(-1, 1), axis = 1)
     left = np.append(left, np.ones((4, 1)), axis = 1)
+    
     left = left.T
+#    left[0], left[1] = left[1], left[0]
 
     p = np.dot(Q, left)
     
