@@ -23,8 +23,8 @@ def undistort(image, camera_matrix, distortion_coefficients):
                        None, new_camera_mtx)
     x, y, w, h = roi
     dst = dst[y:y+h, x:x+w]
-    cv.imshow('undistort_image', dst)
-    cv.imwrite('undistort_image.png', dst)
+#    cv.imshow('undistort_image', dst)
+#    cv.imwrite('undistort_image.png', dst)
     return dst, new_camera_mtx
 
 def extrace_object(image):
@@ -32,8 +32,8 @@ def extrace_object(image):
 #    cv.imshow('blurred', blurred)
     gray = cv.cvtColor(blurred, cv.COLOR_BGR2GRAY)
     gray = 255 - gray
-    cv.imwrite('gray.png', gray)
-    cv.imshow('gray', gray)
+#    cv.imwrite('gray.png', gray)
+#    cv.imshow('gray', gray)
     circles = cv.HoughCircles(gray, cv.HOUGH_GRADIENT, 1, 18,
                               param1 = 100, param2 = 40, 
                               minRadius = 0, maxRadius = 0)
@@ -53,17 +53,17 @@ def extrace_object(image):
 #    cv.imshow('mask', mask)
 #    print(mask.dtype, gray.dtype)
     masked_image = gray * mask
-    cv.imshow('masked_image', masked_image)
-    cv.imwrite('masked_image.png', masked_image)
+#    cv.imshow('masked_image', masked_image)
+#    cv.imwrite('masked_image.png', masked_image)
     
     ret, binary = cv.threshold(masked_image, 0, 255, cv.THRESH_BINARY | cv.THRESH_OTSU)
-    cv.imshow('binary image', binary)
-    cv.imwrite('binary_image.png', binary)
+#    cv.imshow('binary image', binary)
+#    cv.imwrite('binary_image.png', binary)
     
     edge_output = cv.Canny(binary, 50, 150)
 #    print(edge_output.shape)
-    cv.imshow('canny edge', edge_output)
-    cv.imwrite('canny_edge.png', edge_output)
+#    cv.imshow('canny edge', edge_output)
+#    cv.imwrite('canny_edge.png', edge_output)
     
     index = np.argwhere(edge_output == 255)
     X_d, Y_d = index[:, 0], index[:, 1]
@@ -107,8 +107,8 @@ def fit_circle(X_W, Y_W):
     
 if __name__ == '__main__':
     src = cv.imread(r'WIN_20190423_12_49_57_Pro.jpg')
-    cv.imshow('input image', src)
-    cv.imwrite('input_image.png', src)
+#    cv.imshow('input image', src)
+#    cv.imwrite('input_image.png', src)
     
     camera_matrix = np.array([[9.239681093184738e+02, -0.015369582553920, 6.546624748490717e+02],
                               [0, 9.254082497754611e+02, 4.041001652378953e+02],
